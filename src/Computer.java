@@ -14,15 +14,13 @@ public class Computer {
 	
 	public String colorChoice = "";
 	public void play(Hand hands) {
-		 colorChoice = "";//clear color choice each time the function is ran
+		colorChoice = "";//clear color choice each time the function is ran
 		this.hands = hands;//import the current hand into the class
 		hand = hands.hand;//import the array version of the hand from the hand class
 		String[] possibleCards = null;//string array to hold all possible card choices
 		String currentCardNumber = cards.numberOfCurrent;//current number
 		String currentCardColor = cards.colorOfCurrent;//current color
-		
 		String cardColor = null;//variables to hold the loop's current card parts
-		
 		int counter = 0;//counts the number of valid cards there are in the computer's hand
 		int[] colors = new int[4];//[red][green][blue][yellow] count of the color choices for wild card color selection
 		String[] colorNum = null;//array to hold data from the getColorAndNum function

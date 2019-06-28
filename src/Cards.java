@@ -197,6 +197,8 @@ public class Cards {
 	//play card function for the human
 	String colorOfCardToPlay = null;
 	String numberOfCardToPlay = null;
+	public String colorOfCurrent = null;
+	public String numberOfCurrent = null;
 	public boolean playCard(int card, Hand hand) {
 		boolean ableToPlay = true;
 		String cardToPlay = hand.hand[card];
@@ -204,6 +206,13 @@ public class Cards {
 			if (cardToPlay.substring(i, i+1).equals(" ")) {//if the loop reaches a spot where the next character is a space
 				colorOfCardToPlay = cardToPlay.substring(0, i);//the color is the string from the beginning to the current spot
 				numberOfCardToPlay = cardToPlay.substring(i+1);//the number is from after the space to the end of the string
+				break;
+			} else continue;//if the space is not found, continue in the loop
+		}
+		for (int i = 0; i < currentCard.length(); i++) {//loop through the string of the current card in play
+			if (currentCard.substring(i, i+1).equals(" ")) {////if the loop reaches a spot where the next character is a space
+				colorOfCurrent = currentCard.substring(0, i);//the color is the string from the beginning to the current spot
+				numberOfCurrent = currentCard.substring(i+1);//the number is from after the space to the end of the string
 				break;
 			} else continue;//if the space is not found, continue in the loop
 		}
@@ -238,9 +247,7 @@ public class Cards {
 		}
 		return ableToPlay;//return the validity of the card
 	}
-	
-	String colorOfCurrent = null;
-	String numberOfCurrent = null;
+
 	//play card function for the computer
 	public boolean compPlayCard(String card, int cardNum, Hand hand, String colorChoice, boolean wilds) {
 		boolean ableToPlay = true;
