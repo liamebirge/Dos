@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 public class Cards {
 	public String[][] deck;
-	private Hand hand;
 	public String currentCard;
 	//array[# card types][# colors]
 	
@@ -91,8 +90,13 @@ public class Cards {
 				}
 				//if the card slot chosen doesn't contain zero cards
 				if(Integer.parseInt(deck[cardNumber][cardColor]) > 0) {
-					cards[i] = ("" + color + deck[cardNumber][0]);//add the card to the hand
-					deck[cardNumber][cardColor] = Integer.toString(Integer.parseInt(deck[cardNumber][cardColor])-1);//subtract one from the deck's count of that card
+					if (cardNumber >= 13) {//if the card is a wild card
+						cards[i] = ("" + deck[cardNumber][0]);//add the card to the hand without color string
+						deck[cardNumber][cardColor] = Integer.toString(Integer.parseInt(deck[cardNumber][cardColor])-1);//subtract one from the deck's count of that card
+					} else {
+						cards[i] = ("" + color + deck[cardNumber][0]);//add the card to the hand
+						deck[cardNumber][cardColor] = Integer.toString(Integer.parseInt(deck[cardNumber][cardColor])-1);//subtract one from the deck's count of that card
+					}
 				}
 			}
 		}
@@ -103,6 +107,7 @@ public class Cards {
 			}
 		}
 		
+		//shrink the hand array to include no empty spaces
 		String[] handTemp;
 		int counter = 0;
 		for (int i = 0; i < cards.length; i++) {
@@ -114,30 +119,22 @@ public class Cards {
 		for (int i = 0; i < handTemp.length; i++) {
 			handTemp[i] = cards[i];
 		}
-		/*for (int j = 0; j < handTemp.length; j++) {
-			System.out.println((j+1) + ": " + handTemp[j]);
-		}
-		for (int i = 0; i < deck.length; i++) {//prints the entire deck with number of cards
-			for (int j = 0; j < deck[0].length; j++) {
-				System.out.println(deck[i][j]);
-			}
-		}*/
+		
 		if (numberOfTotalCards <= 0) {//re-shuffle the deck when there are no cards left
 			Dealer.reshuffle = true;
 		}
-		//System.out.println(numberOfTotalCards);//count of cards that are left
+		//System.out.println("Cards Left: " + numberOfTotalCards);//count of cards that are left
 		return cards;
 	}
 	
 	public String dealOne(Hand hand) {
-		this.hand = hand;
 		String card = null;
 		while (card == null) {//if the card is chosen as null, continuously loop though to find one that isnt null
 			color = "";//reset color string
 			int cardNumber = rand.nextInt(16);//choose random card value
 			int cardColor = rand.nextInt(5-1)+1;//choose random color
 			//convert color selection to string
-			if (cardNumber <= 13) {
+			if (cardNumber < 13) {
 				if (cardColor == 1) {
 					color = "Blue ";
 				} else if (cardColor == 2) {
@@ -152,26 +149,25 @@ public class Cards {
 					card = ("" + color + deck[cardNumber][0]);//add the card to the hand
 					deck[cardNumber][cardColor] = Integer.toString(Integer.parseInt(deck[cardNumber][cardColor])-1);//subtract one from the deck's count of that card
 				}
-			} else {
+			} else {//if the card chosen is a wild card
 				//if the card slot chosen doesn't contain zero cards
 				if(Integer.parseInt(deck[cardNumber][cardColor]) > 0) {
-					card = ("" + deck[cardNumber][0]);//add the card to the hand
+					card = ("" + deck[cardNumber][0]);//add the card to the hand without color string
 					deck[cardNumber][cardColor] = Integer.toString(Integer.parseInt(deck[cardNumber][cardColor])-1);//subtract one from the deck's count of that card
 				}
 			}
 		}
-		currentCard = card;
+		currentCard = card;//make the chosen card the current card
 		return card;
 	}
 	
 	public void drawCard(Hand hand) {
-		this.hand = hand;
 		String card = null;
 		while (card == null) {//if the card is chosen as null, continuously loop though to find one that isnt null
 			int cardNumber = rand.nextInt(16);//choose random card value
 			int cardColor = rand.nextInt(5-1)+1;//choose random color
 			//convert color selection to string
-			if (cardNumber <= 13) {
+			if (cardNumber < 13) {
 				if (cardColor == 1) {
 					color = "Blue ";
 				} else if (cardColor == 2) {
@@ -186,27 +182,24 @@ public class Cards {
 					card = ("" + color + deck[cardNumber][0]);//add the card to the hand
 					deck[cardNumber][cardColor] = Integer.toString(Integer.parseInt(deck[cardNumber][cardColor])-1);//subtract one from the deck's count of that card
 				}
-			} else {
+			} else {//if the card is not a wild card
 				//if the card slot chosen doesn't contain zero cards
 				if(Integer.parseInt(deck[cardNumber][cardColor]) > 0) {
-					card = ("" + deck[cardNumber][0]);//add the card to the hand
+					card = ("" + deck[cardNumber][0]);//add the card to the hand with no color string
 					deck[cardNumber][cardColor] = Integer.toString(Integer.parseInt(deck[cardNumber][cardColor])-1);//subtract one from the deck's count of that card
 				}
 			}
 		}
-		hand.addToHand(card);
+		hand.addToHand(card);//add chosen card to hand
 	}
 	
+	
+	//play card function for the human
 	String colorOfCardToPlay = null;
-	String colorOfCurrent = null;
 	String numberOfCardToPlay = null;
-	String numberOfCurrent = null;
 	public boolean playCard(int card, Hand hand) {
-		this.hand = hand;
 		boolean ableToPlay = true;
-		this.hand = hand;//update the hand
 		String cardToPlay = hand.hand[card];
-		String wild = "Wild";
 		for (int i = 0; i < cardToPlay.length(); i++) {//loop through the string containing the card the user wants to play
 			if (cardToPlay.substring(i, i+1).equals(" ")) {//if the loop reaches a spot where the next character is a space
 				colorOfCardToPlay = cardToPlay.substring(0, i);//the color is the string from the beginning to the current spot
@@ -214,47 +207,42 @@ public class Cards {
 				break;
 			} else continue;//if the space is not found, continue in the loop
 		}
-		for (int i = 0; i < currentCard.length(); i++) {//loop through the string of the current card in play
-			if (currentCard.substring(i, i+1).equals(" ")) {////if the loop reaches a spot where the next character is a space
-				colorOfCurrent = currentCard.substring(0, i);//the color is the string from the beginning to the current spot
-				numberOfCurrent = currentCard.substring(i+1);//the number is from after the space to the end of the string
-				break;
-			} else continue;//if the space is not found, continue in the loop
-		}
 		
 		//rules for placing new cards
-		if (currentCard.contains(colorOfCardToPlay) || currentCard.contains(numberOfCardToPlay) || currentCard.contains(wild)) {
-			System.out.println("\nYou played: " + hand.hand[card] + "\n");
-			hand.removeFromHand(card);
-			hand.printHand();
-			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;
-		} else if (colorOfCardToPlay.contains(wild)) {
+		if (currentCard.contains(colorOfCardToPlay) || currentCard.contains(numberOfCardToPlay) || currentCard.contains("Wild")) {
+			System.out.println("\nYou played: " + hand.hand[card] + "\n");//show what card the user played
+			hand.removeFromHand(card);//remove it from the hand
+			hand.printHand();//print the hand
+			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;//glue the parts of the card together and make them the current card
+		} else if (colorOfCardToPlay.contains("Wild")) {//if the user wants to play a wild card
 			System.out.println("You played: " + hand.hand[card]);
-			System.out.println("What color would you like to choose? <R-G-B-Y>: ");
+			System.out.println("What color would you like to choose? <R-G-B-Y>: ");//prompt the user to choose a color of the card
 			char colorChoice = scan.next().charAt(0);
-			if (colorChoice == 'r' || colorChoice == 'R') {
+			if (colorChoice == 'r' || colorChoice == 'R') {//red
 				colorOfCardToPlay = "Red";
-			} else if (colorChoice == 'g' || colorChoice == 'G') {
+			} else if (colorChoice == 'g' || colorChoice == 'G') {//green
 				colorOfCardToPlay = "Green";
-			} else if (colorChoice == 'b' || colorChoice == 'B') {
+			} else if (colorChoice == 'b' || colorChoice == 'B') {//blue
 				colorOfCardToPlay = "Blue";
-			} else if (colorChoice == 'y' || colorChoice == 'Y') {
+			} else if (colorChoice == 'y' || colorChoice == 'Y') {//yellow
 				colorOfCardToPlay = "Yellow";
 			}
-			hand.removeFromHand(card);
-			hand.printHand();
-			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;
-			System.out.println("The color is now " + colorOfCardToPlay);
-		} else {
+			hand.removeFromHand(card);//remove the card from the hand
+			hand.printHand();//print the updated hand
+			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;//change the current card to reflect the chosen color 
+			System.out.println("\nThe color is now " + colorOfCardToPlay + "\n");//display the new color
+		} else {//if the attempted card does not follow the rules of placement
 			System.out.println("You want to play: " + hand.hand[card] + " on a " + currentCard);
 			System.out.println("That doesnt work. Try a different card");
-			ableToPlay = false;
+			ableToPlay = false;//the card is not able to be played
 		}
-		return ableToPlay;
+		return ableToPlay;//return the validity of the card
 	}
 	
+	String colorOfCurrent = null;
+	String numberOfCurrent = null;
+	//play card function for the computer
 	public boolean compPlayCard(String card, int cardNum, Hand hand, String colorChoice, boolean wilds) {
-		this.hand = hand;
 		boolean ableToPlay = true;
 		String cardToPlay = card;
 		String wild = "Wild";
@@ -279,21 +267,20 @@ public class Cards {
 			hand.removeFromHand(cardNum);
 			System.out.println("The computer has " + hand.hand.length + " cards left\n");
 			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;
-		} else if (wilds) {
-			currentCard = colorChoice + " " + numberOfCardToPlay;
-			hand.removeFromHand(cardNum);
-			System.out.println("The computer has " + hand.hand.length + " cards left\n");
-			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;
-			System.out.println("The color is now " + colorOfCardToPlay);
-		} else {
+		} else if (wilds) {//if the computer chose to play a wild card
+			currentCard = colorChoice + " " + numberOfCardToPlay;//add its chosen color to the current card
+			hand.removeFromHand(cardNum);//remove the card from its hand
+			System.out.println("The computer has " + hand.hand.length + " cards left\n");//display how many cards it has left
+			System.out.println("The color is now " + colorChoice);//display new color
+		} else {//if the computer makes a goofy decision
 			System.out.println("The computer wants to play: " + card + " on a " + currentCard);
 			System.out.println("That doesnt work. Its being scolded");
-			ableToPlay = false;
+			ableToPlay = false;//make the card unable to be played
 		}
 		return ableToPlay;
 	}
 	
-	public String[] getColorAndNum(String card) {
+	public String[] getColorAndNum(String card) {//gets color and number of a card from the card string
 		String cardColor = null, cardNumber = null;
 		for (int i = 0; i < card.length(); i++) {//loop through the string of the current card in play
 			if (card.substring(i, i+1).equals(" ")) {////if the loop reaches a spot where the next character is a space
@@ -301,7 +288,7 @@ public class Cards {
 				cardNumber = card.substring(i+1);//the number is from after the space to the end of the string
 			} else continue;//if the space is not found, continue in the loop
 		}
-		String[] colorNum = {cardColor, cardNumber};
+		String[] colorNum = {cardColor, cardNumber};//return an array of [0: color][1: number]
 		return colorNum;
 	}
 }

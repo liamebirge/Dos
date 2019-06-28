@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Dealer {
 	public static boolean reshuffle = false;
 	public static void main(String[] args) {
+		reshuffle = false;
 		Cards cards;
 		Hand hand, compHand;
 		Computer comp;

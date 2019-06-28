@@ -21,7 +21,7 @@ public class Computer {
 		String currentCardNumber = cards.numberOfCurrent;//current number
 		String currentCardColor = cards.colorOfCurrent;//current color
 		
-		String cardColor = null, cardNumber = null;//variables to hold the loop's current card parts
+		String cardColor = null;//variables to hold the loop's current card parts
 		
 		int counter = 0;//counts the number of valid cards there are in the computer's hand
 		int[] colors = new int[4];//[red][green][blue][yellow] count of the color choices for wild card color selection
@@ -30,7 +30,6 @@ public class Computer {
 		for (int i = 0; i < hand.length; i++) {//loop through the whole hand
 			colorNum = cards.getColorAndNum(hand[i]);//get the current card's color and number
 			cardColor = colorNum[0];//get the color for the card
-			cardNumber = colorNum[1];//get the number of the card
 			//if the current card fits the rules of a playable card based on the previously played card
 			if (hand[i].contains(currentCardNumber) || hand[i].contains(currentCardColor) || hand[i].contains("Wild")) {
 				counter++;//increase the counter
@@ -57,7 +56,6 @@ public class Computer {
 			for (int i = 0; i < hand.length; i++) {//loop through the whole hand
 				colorNum = cards.getColorAndNum(hand[i]);
 				cardColor = colorNum[0];//get the color for the card
-				cardNumber = colorNum[1];//get the number of the card
 				for(int j = 0; j < possibleCards.length; j++) {//loop through possible card array
 					//if the card satisfies the rules of placement
 					if (hand[i].contains(currentCardNumber) || hand[i].contains(currentCardColor) || hand[i].contains("Wild") || hand[i].contains("Wild")) {
@@ -98,7 +96,7 @@ public class Computer {
 		play(hands);
 	}
 	
-	private String chooseColor(int[] colors) {
+	private String chooseColor(int[] colors) {//chooses color of wild cards
 		String choice = "";
 		int max = 0;
 		int highestIndex = 0;
