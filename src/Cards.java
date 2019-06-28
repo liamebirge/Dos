@@ -29,7 +29,10 @@ public class Cards {
 		   //[Choose Color] [1]   [1]     [1]    [1]
     //[Choose Color&Draw 4] [1]   [1]     [1]    [1]
      //[Color&Shuffle Hand] [1]   [1]     [1]    [1]
-		
+		init();
+	}
+	
+	public void init() {
 		deck = new String[16][5];//adding titles for each card type
 		deck[0][0] = "Zero";
 		deck[1][0] = "One";
@@ -70,7 +73,6 @@ public class Cards {
 	
 	public String[] startingDeal() {//for the first deal
 		String[] cards = new String[7];//hand of 7 cards
-		int numberOfTotalCards;
 		for (int i = 0; i < 7; i++) {//loop through all slots in hand array
 			color = "";//reset color string
 			while (cards[i] == null) {//if the card is chosen as null, continuously loop though to find one that isnt null
@@ -100,12 +102,6 @@ public class Cards {
 				}
 			}
 		}
-		numberOfTotalCards = 0;//counts number of cards left in deck
-		for (int j = 0; j < 16; j++) {//loop though all cards in the deck
-			for (int k = 1; k < 5; k++) {
-				numberOfTotalCards += Integer.parseInt(deck[j][k]);//count how many there are
-			}
-		}
 		
 		//shrink the hand array to include no empty spaces
 		String[] handTemp;
@@ -118,10 +114,6 @@ public class Cards {
 		handTemp = new String[counter];
 		for (int i = 0; i < handTemp.length; i++) {
 			handTemp[i] = cards[i];
-		}
-		
-		if (numberOfTotalCards <= 0) {//re-shuffle the deck when there are no cards left
-			Dealer.reshuffle = true;
 		}
 		//System.out.println("Cards Left: " + numberOfTotalCards);//count of cards that are left
 		return cards;
@@ -162,6 +154,17 @@ public class Cards {
 	}
 	
 	public void drawCard(Hand hand) {
+		int numberOfTotalCards;
+		numberOfTotalCards = 0;//counts number of cards left in deck
+		for (int j = 0; j < 16; j++) {//loop though all cards in the deck
+			for (int k = 1; k < 5; k++) {
+				numberOfTotalCards += Integer.parseInt(deck[j][k]);//count how many there are
+			}
+		}
+		if (numberOfTotalCards <= 0) {//re-shuffle the deck when there are no cards left
+			init();
+		}
+		
 		String card = null;
 		while (card == null) {//if the card is chosen as null, continuously loop though to find one that isnt null
 			int cardNumber = rand.nextInt(16);//choose random card value
@@ -190,6 +193,7 @@ public class Cards {
 				}
 			}
 		}
+		//System.out.println("Total Cards: " + numberOfTotalCards);
 		hand.addToHand(card);//add chosen card to hand
 	}
 	
@@ -269,16 +273,16 @@ public class Cards {
 		}
 		
 		//rules for placing new cards
-		if (currentCard.contains(colorOfCardToPlay) || currentCard.contains(numberOfCardToPlay) || currentCard.contains(wild)) {
-			System.out.println("\nComputer played: " + card + "\n");
-			hand.removeFromHand(cardNum);
-			System.out.println("The computer has " + hand.hand.length + " cards left\n");
-			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;
-		} else if (wilds) {//if the computer chose to play a wild card
+		if (wilds) {//if the computer chose to play a wild card
 			currentCard = colorChoice + " " + numberOfCardToPlay;//add its chosen color to the current card
 			hand.removeFromHand(cardNum);//remove the card from its hand
 			System.out.println("The computer has " + hand.hand.length + " cards left\n");//display how many cards it has left
 			System.out.println("The color is now " + colorChoice);//display new color
+		} else if (currentCard.contains(colorOfCardToPlay) || currentCard.contains(numberOfCardToPlay) || currentCard.contains(wild)) {
+			System.out.println("\nComputer played: " + card + "\n");
+			hand.removeFromHand(cardNum);
+			System.out.println("The computer has " + hand.hand.length + " cards left\n");
+			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;
 		} else {//if the computer makes a goofy decision
 			System.out.println("The computer wants to play: " + card + " on a " + currentCard);
 			System.out.println("That doesnt work. Its being scolded");
