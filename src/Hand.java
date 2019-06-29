@@ -1,64 +1,42 @@
 
 public class Hand {
 	String[] hand;
-	String[] handTemp;
+	
 	public Hand(String[] hand) {
-		this.hand = hand;
-		int counter = 0;
-		for (int i = 0; i < hand.length; i++) {
-			if (hand[i] != null) {
-				counter++;
-			}
-		}
-		handTemp = new String[counter];
-		for (int i = 0; i < handTemp.length; i++) {
-			handTemp[i] = hand[i];
-		}
+		this.hand = hand;//localize the hand
 	}
 	
-	public void addToHand(String card) {
-		String[] handtemp = new String[hand.length+1];
-		for (int i = 0; i < hand.length; i++) {
-			handtemp[i] = hand[i];
+	public void addToHand(String card) {//function to add a card to the hand
+		String[] handtemp = new String[hand.length+1];//increase hand size by one
+		for (int i = 0; i < hand.length; i++) {//loop through the length of the hand
+			handtemp[i] = hand[i];//add all elements to the temp array
 		}
-		handtemp[hand.length] = card;
-		hand = new String[handTemp.length];
-		hand = handtemp;
-		/*int counter = 0;
-		for (int i = 0; i < hand.length; i++) {
-			if (hand[i] != null) {
-				counter++;
-			}
-		}
-		handTemp = new String[counter];
-		for (int i = 0; i < handTemp.length; i++) {
-			handTemp[i] = hand[i];
-		}*/
+		handtemp[hand.length] = card;//add the new card to the end of the temp array
+		hand = handtemp;//make the hand equal to the temp array
 	}
 	
-	public void removeFromHand(int card) {
-		int handSize = hand.length;
-		String [] temp = new String[handSize];
-		int internalCounter = 0;
-		for(int i = 0; i < handSize; ++i){
-		    if( i != card ){
-		        temp[internalCounter] = hand[i];
-		        internalCounter++;
+	public void removeFromHand(int card) {//function for removing card from the hand
+		String [] temp = new String[hand.length];//make new temp array for hand
+		int internalCounter = 0;//keeps track of next available index
+		for(int i = 0; i < hand.length; ++i){//loop through whole hand
+		    if( i != card ){//if the current card is not equal to the desired card
+		        temp[internalCounter] = hand[i];//add the current card to the array in the lowest available slot
+		        internalCounter++;//increase available index
 		    }
 		}
-		temp[temp.length-1] = null;
-		String [] temp2 = new String[temp.length-1];
-		for (int j = 0; j < temp2.length; j++) {
-			if (temp[j] != null) {
-				temp2[j] = temp[j];
+		temp[temp.length-1] = null;//make last slot null
+		String [] temp2 = new String[temp.length-1];//new temp array to shorten the hand to exclude null entries
+		for (int j = 0; j < temp2.length; j++) {//loop through the new temp array
+			if (temp[j] != null) {//if the slot in the first temp array isn't null
+				temp2[j] = temp[j];//add the card to the shortened temp array
 			}
 		}
-		hand = temp2;
+		hand = temp2;//make the hand equal to the shortened hand
 	}
 	
-	public void printHand() {
-		for (int j = 0; j < hand.length; j++) {
-			System.out.println((j+1) + ": " + hand[j]);
+	public void printHand() {//function to print the current hand
+		for (int j = 0; j < hand.length; j++) {//loop through the hand
+			System.out.println((j+1) + ": " + hand[j]);//print each card with its slot number
 		}
 	}
 }

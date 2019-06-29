@@ -96,12 +96,12 @@ public class Computer {
 	
 	private String chooseColor(int[] colors) {//chooses color of wild cards
 		String choice = "";
-		int max = 0;
+		int max = 0;//sets 0 as current maximum
 		int highestIndex = 0;
-		for (int i = 0; i < colors.length; i++) {
-			if (colors[i] > max) {
-				max = colors[i];
-				highestIndex = i;
+		for (int i = 0; i < colors.length; i++) {//loops though the color array
+			if (colors[i] > max) {//if there are more cards of the color than the previous maximum
+				max = colors[i];//make it the new max
+				highestIndex = i;//record which color index it was that contained the most cards
 			}
 		}
 		if (highestIndex == 0) {//more red
@@ -113,6 +113,6 @@ public class Computer {
 		} else if(highestIndex == 3) {//more yellow
 			choice = "Yellow";
 		}
-		return choice;
+		return choice;//return string value of the color choice
 	}
 }

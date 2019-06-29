@@ -1,6 +1,11 @@
 import java.util.Random;
 import java.util.Scanner;
 
+/* To-Do:
+ * Code rules for Skip, Draw 2, draw 4/shuffle wilds, and Reverse
+ * */
+
+
 public class Cards {
 	public String[][] deck;
 	public String currentCard;
