@@ -13,7 +13,8 @@ public class Computer {
 	}
 	
 	public String colorChoice = "";
-	public void play(Hand hands) {
+	public int play(Hand hands) {
+		int playState = 0;
 		colorChoice = "";//clear color choice each time the function is ran
 		this.hands = hands;//import the current hand into the class
 		hand = hands.hand;//import the array version of the hand from the hand class
@@ -84,10 +85,12 @@ public class Computer {
 				wild = true;
 			}
 			//if the card is not able to be played
-			if(!cards.compPlayCard(possibleCards[cardChoice], numberInHand, hands, colorChoice, wild)) {
+			playState = cards.compPlayCard(possibleCards[cardChoice], numberInHand, hands, colorChoice, wild);
+			if(playState == 1 || playState == 2) {
 				restart();//restart the play function
 			}
 		}
+		return playState;
 	}
 	
 	private void restart() {

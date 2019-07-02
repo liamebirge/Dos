@@ -1,15 +1,15 @@
 import java.util.Scanner;
 
 public class Dealer {
-	public static boolean reshuffle = false;
+	public boolean reshuffle = false;
+	static boolean looping = true;
+	static boolean playing;
+	static Cards cards;
+	static Hand hand, compHand;
+	static Computer comp;
+	static Scanner scan = new Scanner(System.in);
+	
 	public static void main(String[] args) {
-		boolean looping = true;
-		boolean playing;
-		Cards cards;
-		Hand hand, compHand;
-		Computer comp;
-		Scanner scan = new Scanner(System.in);
-		
 		BREAKLOOP:
 		while(looping) {//encompassing loop that allows multiple games to be played in a row
 			cards = new Cards();//create new deck
@@ -32,15 +32,31 @@ public class Dealer {
 					if (playChoice == 'P' || playChoice == 'p') {//if the user wants to play a card
 						System.out.print("What card would you like to play?: ");
 						int cardChoice = scan.nextInt();//takes index of card the user wants to play
-						if(cards.playCard(cardChoice-1, hand)) {//plays selected card while also checking if the card can be played
+						int playState = cards.playCard(cardChoice-1, hand);
+						if(playState == 0) {//plays selected card while also checking if the card can be played
 							if(hand.hand.length <= 0) {//if the user runs out of cards before the computer
 								System.out.println("Great job! You beat the computer.");
 								playing = false;//break from the game loop
 								break BREAK;
 							}
 							//if the card can be played, progress to the computer's turn
-							System.out.println("\nComputer's turn...");
-							comp.play(compHand);
+							compTurn();
+							if (compHand.hand.length <= 0) {//if the computer runs out of cards before the user
+								System.out.println("Oof, You got beat by the computer.");
+								playing = false;//break from the game loop
+								break BREAK;
+							}
+						} else if (playState == 3) {//draw 2
+							drawCards(2, compHand);
+							compTurn();
+							if (compHand.hand.length <= 0) {//if the computer runs out of cards before the user
+								System.out.println("Oof, You got beat by the computer.");
+								playing = false;//break from the game loop
+								break BREAK;
+							}
+						} else if (playState == 4) {//draw 4
+							drawCards(4, compHand);
+							compTurn();
 							if (compHand.hand.length <= 0) {//if the computer runs out of cards before the user
 								System.out.println("Oof, You got beat by the computer.");
 								playing = false;//break from the game loop
@@ -63,5 +79,27 @@ public class Dealer {
 			}
 		}
 		System.out.println("\nShutting down...");//notify user that the program is terminating
+	}
+	
+	public static void compTurn() {
+		System.out.println("\nComputer's turn...");
+		int compState = comp.play(compHand);
+		if (compState == 3) {//draw 2
+			drawCards(2, hand);
+		} else if (compState == 4) {//draw 4
+			drawCards(4, hand);
+		}
+	}
+	
+	public static void drawCards(int numCards, Hand handed) {
+		if (numCards == 2) {
+			cards.drawCard(handed);
+			cards.drawCard(handed);
+		} else {
+			cards.drawCard(handed);
+			cards.drawCard(handed);
+			cards.drawCard(handed);
+			cards.drawCard(handed);
+		}
 	}
 }

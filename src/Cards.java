@@ -208,8 +208,8 @@ public class Cards {
 	String numberOfCardToPlay = null;
 	public String colorOfCurrent = null;
 	public String numberOfCurrent = null;
-	public boolean playCard(int card, Hand hand) {
-		boolean ableToPlay = true;
+	public int playCard(int card, Hand hand) {
+		int state = 0;//0 = card can be played, 1 = card cant be played, 2 = card can be played and replay turn, 3 = opponent draw 2, 4 = opponent draw 4
 		String cardToPlay = hand.hand[card];
 		for (int i = 0; i < cardToPlay.length(); i++) {//loop through the string containing the card the user wants to play
 			if (cardToPlay.substring(i, i+1).equals(" ")) {//if the loop reaches a spot where the next character is a space
@@ -227,12 +227,13 @@ public class Cards {
 		}
 		
 		//rules for placing new cards
-		if (currentCard.contains(colorOfCardToPlay) || currentCard.contains(numberOfCardToPlay) || currentCard.contains("Wild")) {
-			System.out.println("\nYou played: " + hand.hand[card] + "\n");//show what card the user played
-			hand.removeFromHand(card);//remove it from the hand
-			hand.printHand();//print the hand
-			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;//glue the parts of the card together and make them the current card
-		} else if (colorOfCardToPlay.contains("Wild")) {//if the user wants to play a wild card
+		if (cardToPlay.contains("Wild")) {//if the user wants to play a wild card
+			if (cardToPlay.contains("Draw 4")) {
+				state = 4;
+				//other player has 4 cards added to hand
+			} else if (cardToPlay.contains("Shuffle")) {
+				//shuffle the hands of all players and deal equal sized hands back
+			}
 			System.out.println("You played: " + hand.hand[card]);
 			System.out.println("What color would you like to choose? <R-G-B-Y>: ");//prompt the user to choose a color of the card
 			char colorChoice = scan.next().charAt(0);
@@ -249,17 +250,30 @@ public class Cards {
 			hand.printHand();//print the updated hand
 			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;//change the current card to reflect the chosen color 
 			System.out.println("\nThe color is now " + colorOfCardToPlay + "\n");//display the new color
+		} else if (currentCard.contains(colorOfCardToPlay) || currentCard.contains(numberOfCardToPlay) || currentCard.contains("Wild")) {
+			if (numberOfCardToPlay.contains("Draw 2")) {
+				//other player has 2 cards added to hand
+				state = 3;
+			} else if (numberOfCardToPlay.contains("Reverse") || numberOfCardToPlay.contains("Skip")) {
+				//play another card
+				state = 2;
+				System.out.println("\nYour turn again!");
+			}
+			System.out.println("\nYou played: " + hand.hand[card] + "\n");//show what card the user played
+			hand.removeFromHand(card);//remove it from the hand
+			//hand.printHand();//print the hand
+			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;//glue the parts of the card together and make them the current card
 		} else {//if the attempted card does not follow the rules of placement
 			System.out.println("You want to play: " + hand.hand[card] + " on a " + currentCard);
 			System.out.println("That doesnt work. Try a different card");
-			ableToPlay = false;//the card is not able to be played
+			state = 1;//the card is not able to be played
 		}
-		return ableToPlay;//return the validity of the card
+		return state;//return the validity of the card
 	}
 
 	//play card function for the computer
-	public boolean compPlayCard(String card, int cardNum, Hand hand, String colorChoice, boolean wilds) {
-		boolean ableToPlay = true;
+	public int compPlayCard(String card, int cardNum, Hand hand, String colorChoice, boolean wilds) {
+		int state = 0;//0=able to play, 1=not able to play, 2=reverse, 3=draw 2, 4=draw 4
 		String cardToPlay = card;
 		String wild = "Wild";
 		for (int i = 0; i < cardToPlay.length(); i++) {//loop through the string containing the card the user wants to play
@@ -282,8 +296,16 @@ public class Cards {
 			currentCard = colorChoice + " " + numberOfCardToPlay;//add its chosen color to the current card
 			hand.removeFromHand(cardNum);//remove the card from its hand
 			System.out.println("The computer has " + hand.hand.length + " cards left\n");//display how many cards it has left
-			System.out.println("The color is now " + colorChoice);//display new color
+			System.out.println("The color is now " + colorChoice + "\n");//display new color
 		} else if (currentCard.contains(colorOfCardToPlay) || currentCard.contains(numberOfCardToPlay) || currentCard.contains(wild)) {
+			if (cardToPlay.contains("Draw 2")) {
+				//other player has 2 cards added to hand
+				state = 3;
+			} else if (cardToPlay.contains("Reverse") || cardToPlay.contains("Skip")) {
+				//play another card
+				state = 2;
+				System.out.println("\nComputer's turn again");
+			}
 			System.out.println("\nComputer played: " + card + "\n");
 			hand.removeFromHand(cardNum);
 			System.out.println("The computer has " + hand.hand.length + " cards left\n");
@@ -291,9 +313,9 @@ public class Cards {
 		} else {//if the computer makes a goofy decision
 			System.out.println("The computer wants to play: " + card + " on a " + currentCard);
 			System.out.println("That doesnt work. Its being scolded");
-			ableToPlay = false;//make the card unable to be played
+			state = 1;//make the card unable to be played
 		}
-		return ableToPlay;
+		return state;
 	}
 	
 	public String[] getColorAndNum(String card) {//gets color and number of a card from the card string
