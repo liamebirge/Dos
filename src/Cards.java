@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 /* To-Do:
  * Code rules for Skip, Draw 2, draw 4/shuffle wilds, and Reverse
+ * Make ASCII cards for visual aspect
  * */
 
 
@@ -39,16 +40,16 @@ public class Cards {
 	
 	public void init() {
 		deck = new String[16][5];//adding titles for each card type
-		deck[0][0] = "Zero";
-		deck[1][0] = "One";
-		deck[2][0] = "Two";
-		deck[3][0] = "Three";
-		deck[4][0] = "Four";
-		deck[5][0] = "Five";
-		deck[6][0] = "Six";
-		deck[7][0] = "Seven";
-		deck[8][0] = "Eight";
-		deck[9][0] = "Nine";
+		deck[0][0] = "0";
+		deck[1][0] = "1";
+		deck[2][0] = "2";
+		deck[3][0] = "3";
+		deck[4][0] = "4";
+		deck[5][0] = "5";
+		deck[6][0] = "6";
+		deck[7][0] = "7";
+		deck[8][0] = "8";
+		deck[9][0] = "9";
 		deck[10][0] = "Skip";
 		deck[11][0] = "Reverse";
 		deck[12][0] = "Draw 2";
@@ -247,7 +248,7 @@ public class Cards {
 				colorOfCardToPlay = "Yellow";
 			}
 			hand.removeFromHand(card);//remove the card from the hand
-			hand.printHand();//print the updated hand
+			hand.printHand(this);//print the updated hand
 			currentCard = colorOfCardToPlay + " " + numberOfCardToPlay;//change the current card to reflect the chosen color 
 			System.out.println("\nThe color is now " + colorOfCardToPlay + "\n");//display the new color
 		} else if (currentCard.contains(colorOfCardToPlay) || currentCard.contains(numberOfCardToPlay) || currentCard.contains("Wild")) {
@@ -323,10 +324,111 @@ public class Cards {
 		for (int i = 0; i < card.length(); i++) {//loop through the string of the current card in play
 			if (card.substring(i, i+1).equals(" ")) {////if the loop reaches a spot where the next character is a space
 				cardColor = card.substring(0, i);//the color is the string from the beginning to the current spot
-				cardNumber = card.substring(i+1);//the number is from after the space to the end of the string
+				cardNumber = card.substring(i+1, card.length());//the number is from after the space to the end of the string
 			} else continue;//if the space is not found, continue in the loop
 		}
 		String[] colorNum = {cardColor, cardNumber};//return an array of [0: color][1: number]
 		return colorNum;
+	}
+	
+	public void makeCard(String color, String number, String card) {
+		if (!checkNotNum(card)) {
+			if(color.contains("Red")) {
+				System.out.print("_________\n" +
+						 "| " + number + "      |\n" +
+						 "|        |\n" +
+						 "|  " + color + "   |\n" +
+						 "|        |\n" +
+						 "|     " + number +"  |\n" +
+						 "---------\n");
+			} else if (color.contains("Yellow")) {
+				System.out.print("_________\n" +
+						 "| " + number + "      |\n" +
+						 "|        |\n" +
+						 "| " + color + " |\n" +
+						 "|        |\n" +
+						 "|     " + number +"  |\n" +
+						 "---------\n");
+			} else if (color.contains("Green")) {
+				System.out.print("_________\n" +
+						 "| " + number + "      |\n" +
+						 "|        |\n" +
+						 "|  " + color + " |\n" +
+						 "|        |\n" +
+						 "|     " + number +"  |\n" +
+						 "---------\n");
+			} else if (color.contains("Blue")) {
+				System.out.print("_________\n" +
+						 "| " + number + "      |\n" +
+						 "|        |\n" +
+						 "|  " + color + "  |\n" +
+						 "|        |\n" +
+						 "|     " + number +"  |\n" +
+						 "---------\n");
+			}
+		} else if (checkNotNum(card)) {
+			if(number.contains("Reverse")) {
+				System.out.print("_________\n" +
+						 "|Reverse |\n" +
+						 "|        |\n" +
+						 "|  " + color + "  |\n" +
+						 "|        |\n" +
+						 "| Reverse|\n" +
+						 "---------\n");
+			}
+			if(card.contains("Draw 2")) {
+				color = color.substring(0, color.length()-5);
+				System.out.print("_________\n" +
+						 "|Draw 2  |\n" +
+						 "|        |\n" +
+						 "|  " + color + "  |\n" +
+						 "|        |\n" +
+						 "|  Draw 2|\n" +
+						 "---------\n");
+			}
+			if(number.contains("Skip")) {
+				System.out.print("_________\n" +
+						 "| Skip   |\n" +
+						 "|        |\n" +
+						 "|  " + color + "  |\n" +
+						 "|        |\n" +
+						 "|  Skip  |\n" +
+						 "---------\n");
+			}
+			if(card.contains("Card")) {
+				if (card.contains("Draw 4")) {
+					System.out.print("_________\n" +
+							 "|Wild +4 |\n" +
+							 "|        |\n" +
+							 "|        |\n" +
+							 "|        |\n" +
+							 "| Wild +4|\n" +
+							 "---------\n");
+				} else if(number.contains("Hands")) {
+					System.out.print("_________\n" +
+							 "| Wild   |\n" +
+							 "|        |\n" +
+							 "| Shuffle|\n" +
+							 "|        |\n" +
+							 "|   Wild |\n" +
+							 "---------\n");
+				} else {
+					System.out.print("_________\n" +
+							 "| Wild   |\n" +
+							 "|        |\n" +
+							 "|        |\n" +
+							 "|        |\n" +
+							 "|   Wild |\n" +
+							 "---------\n");
+				}
+			}
+		}
+	}
+	private boolean checkNotNum(String number) {
+		boolean notNum = false;
+		if (number.contains("Hands") || number.contains("Reverse") || number.contains("Draw") || number.contains("Skip") || number.contains("Card")) {
+			notNum = true;
+		}
+		return notNum;
 	}
 }

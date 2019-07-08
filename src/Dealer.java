@@ -26,7 +26,7 @@ public class Dealer {
 				System.out.println("Your turn first.\n\n");
 				BREAK:
 				while(playing) {//game loop
-					hand.printHand();//print hand each time the loop is started
+					hand.printHand(cards);//print hand each time the loop is started
 					System.out.print("Play card or draw card? <P/D>: ");//prompt for action
 					int playChoice = scan.next().charAt(0);
 					if (playChoice == 'P' || playChoice == 'p') {//if the user wants to play a card

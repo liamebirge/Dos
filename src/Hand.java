@@ -34,9 +34,10 @@ public class Hand {
 		hand = temp2;//make the hand equal to the shortened hand
 	}
 	
-	public void printHand() {//function to print the current hand
+	public void printHand(Cards cards) {//function to print the current hand
 		for (int j = 0; j < hand.length; j++) {//loop through the hand
-			System.out.println((j+1) + ": " + hand[j]);//print each card with its slot number
+			cards.makeCard(cards.getColorAndNum(hand[j])[0], cards.getColorAndNum(hand[j])[1], hand[j]);
+			//System.out.println((j+1) + ": " + hand[j]);//print each card with its slot number
 		}
 	}
 }
